@@ -1,17 +1,21 @@
 import React, { Component } from "react";
+import "./reset.css";
 import "./App.css";
 import axios from "axios";
+import image from "./ronone.jpg";
+import Rating from "./Rating";
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
+      ip: "",
       quote: []
     };
   }
   componentDidMount() {
     axios.get("/api/session").then(session => {
-      console.log(session.data);
+      this.setState({ ip: session.data.split(":").pop() });
     });
     axios
       .get("https://ron-swanson-quotes.herokuapp.com/v2/quotes")
@@ -49,8 +53,6 @@ class App extends Component {
       this.medium(quote, length);
     } else if (quoteLength >= 13) {
       this.large(quote, length);
-    } else {
-      this.getQuote(length);
     }
   }
   getQuote(size) {
@@ -61,12 +63,28 @@ class App extends Component {
       });
   }
   render() {
+    console.log("viewhere", this.state);
     return (
       <div className="App">
-        <h1>{this.state.quote}</h1>
-        <button onClick={() => this.getQuote(4)}>Small</button>
-        <button onClick={() => this.getQuote(5)}>Medium</button>
-        <button onClick={() => this.getQuote(13)}>Large</button>
+        <div className="content">
+          <img className="ron" src={image} alt="" />
+          <div className="quote">
+            <h1>{this.state.quote}</h1>
+            <Rating />
+            <div>
+              <button id="small" onClick={() => this.getQuote(4)}>
+                Small
+              </button>
+              <button id="medium" onClick={() => this.getQuote(5)}>
+                Medium
+              </button>
+              <button id="large" onClick={() => this.getQuote(13)}>
+                Large
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="footer" />
       </div>
     );
   }

@@ -5,6 +5,7 @@ const massive = require("massive");
 require("dotenv").config();
 const app = express();
 const sessionController = require("./sessionController");
+const ratingController = require("./ratingController");
 
 app.use(bodyParser.json());
 app.use(
@@ -24,6 +25,8 @@ massive(process.env.CONNECTION_STRING)
   });
 
 app.get("/api/session", sessionController.getIP);
+app.get("/api/rating/:quote", ratingController.getRatings);
+app.post("/api/addrating", ratingController.addRating);
 
 const SERVER_PORT = 4000;
 app.listen(SERVER_PORT, () => {

@@ -1,0 +1,1 @@
+select rating from rate where quote=$1;

@@ -4,6 +4,7 @@ const session = require("express-session");
 const massive = require("massive");
 require("dotenv").config();
 const app = express();
+const sessionController = require("./sessionController");
 
 app.use(bodyParser.json());
 app.use(
@@ -21,6 +22,8 @@ massive(process.env.CONNECTION_STRING)
   .catch(error => {
     console.log("error with massive", error);
   });
+
+app.get("/api/session", sessionController.getIP);
 
 const SERVER_PORT = 4000;
 app.listen(SERVER_PORT, () => {

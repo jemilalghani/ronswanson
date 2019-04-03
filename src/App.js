@@ -10,7 +10,8 @@ class App extends Component {
     super();
     this.state = {
       ip: "",
-      quote: []
+      quote: [],
+      clicked: false
     };
   }
   componentDidMount() {
@@ -20,7 +21,8 @@ class App extends Component {
     axios
       .get("https://ron-swanson-quotes.herokuapp.com/v2/quotes")
       .then(quote => {
-        this.setState({ quote: quote.data });
+        console.log(quote.data);
+        this.setState({ quote: quote.data[0] });
       });
   }
   small(selectedquote, check) {
@@ -41,6 +43,7 @@ class App extends Component {
     if (check === 13) {
       this.setState({ quote: selectedquote });
     } else {
+      this.setState({ quote: "loading..." });
       this.getQuote(check);
     }
   }
@@ -60,17 +63,20 @@ class App extends Component {
       .get("https://ron-swanson-quotes.herokuapp.com/v2/quotes")
       .then(quote => {
         this.checkLength(quote.data[0], size);
+        this.setState({ clicked: true });
       });
   }
+  getInfo() {
+    axios.get(`/api/rating/${this.state.quote}`).then(response => {
+      this.setState({ ratingInfo: response.data });
+    });
+  }
   render() {
-    console.log("viewhere", this.state);
     return (
       <div className="App">
         <div className="content">
           <img className="ron" src={image} alt="" />
           <div className="quote">
-            <h1>{this.state.quote}</h1>
-            <Rating />
             <div>
               <button id="small" onClick={() => this.getQuote(4)}>
                 Small
@@ -81,6 +87,14 @@ class App extends Component {
               <button id="large" onClick={() => this.getQuote(13)}>
                 Large
               </button>
+              <h1>{this.state.quote}</h1>
+              {this.state.quote && (
+                <Rating
+                  quote={this.state.quote}
+                  ip={this.state.ip}
+                  clicked={this.state.clicked}
+                />
+              )}
             </div>
           </div>
         </div>

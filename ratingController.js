@@ -20,5 +20,16 @@ module.exports = {
       .catch(error => {
         console.log("error in POST ratings", error);
       });
+  },
+  checkRating: (req, res) => {
+    req.app
+      .get("db")
+      .check_rating([req.params.ip, req.params.quote])
+      .then(ratings => {
+        res.status(200).json(ratings);
+      })
+      .catch(error => {
+        console.log("error in GET check", error);
+      });
   }
 };

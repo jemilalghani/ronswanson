@@ -79,6 +79,10 @@ input {
   cursor: pointer;
   outline-color: white;
 }
+input:disabled {
+  border: solid 2px grey;
+  color: grey;
+}
 .info {
   width: 500px;
   display: flex;

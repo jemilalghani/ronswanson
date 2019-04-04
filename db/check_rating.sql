@@ -1,0 +1,1 @@
+select * from rate where ip=$1 and quote=$2;

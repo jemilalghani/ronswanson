@@ -26,6 +26,7 @@ massive(process.env.CONNECTION_STRING)
 
 app.get("/api/session", sessionController.getIP);
 app.get("/api/rating/:quote", ratingController.getRatings);
+app.get("/api/check/:ip/:quote", ratingController.checkRating);
 app.post("/api/addrating", ratingController.addRating);
 
 const SERVER_PORT = 4000;

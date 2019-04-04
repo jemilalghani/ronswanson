@@ -50,17 +50,39 @@ export default class Rating extends Component {
       this.clear();
       this.showStars(0);
       this.getInfo();
+      this.checkDatabase();
     }
   }
   getInfo() {
     if (this.props.quote[0]) {
-      let title = this.props.quote;
-      title = escape(title);
+      let title = this.props.quote
+        .split("'")
+        .join("")
+        .split("?")
+        .join("");
+      // title = escape(title);
       axios.get(`/api/rating/${title}`).then(response => {
         this.inputValues(response.data);
         this.setState({ ratingInfo: response.data, gettingInfo: true });
       });
     }
+  }
+  checkDatabase() {
+    let title = this.props.quote
+      .split("'")
+      .join("")
+      .split("?")
+      .join("");
+    // title = escape(title);
+    axios.get(`/api/check/${this.props.ip}/${title}`).then(response => {
+      console.log("dhjfgjshdgjfhsgdj", response.data);
+      if (response.data.length) {
+        document.getElementById("submit").disabled = true;
+      } else {
+        document.getElementById("submit").disabled = false;
+      }
+      this.setState({ notAvail: response.data });
+    });
   }
   inputValues(array) {
     let valueOne = this.state.one;
@@ -99,15 +121,21 @@ export default class Rating extends Component {
     });
   }
   postRating() {
+    let quote = this.props.quote
+      .split("'")
+      .join("")
+      .split("?")
+      .join("");
     axios
       .post("/api/addrating", {
-        quote: this.props.quote,
+        quote: quote,
         rating: this.state.rating,
         ip: this.props.ip
       })
       .then(response => {
         this.clear();
         this.getInfo();
+        this.checkDatabase();
         this.setState({ ratingInfo: response.data });
       });
   }
@@ -136,6 +164,7 @@ export default class Rating extends Component {
     this.setState({ stars: starsmapped });
   };
   render() {
+    console.log(this.state);
     return (
       <div className="ratingContainer">
         <div>{this.state.stars}</div>
@@ -144,6 +173,7 @@ export default class Rating extends Component {
             onClick={() => this.postRating()}
             classname="inputSubmit"
             type="submit"
+            id="submit"
           />
         )}
         <div className="info">

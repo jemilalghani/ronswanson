@@ -63,9 +63,22 @@ export default class Rating extends Component {
       // title = escape(title);
       axios.get(`/api/rating/${title}`).then(response => {
         this.inputValues(response.data);
+        this.calculateAvg();
         this.setState({ ratingInfo: response.data, gettingInfo: true });
       });
     }
+  }
+  calculateAvg() {
+    let valueOne = this.state.one;
+    let valueTwo = this.state.two;
+    let valueThree = this.state.three;
+    let valueFour = this.state.four;
+    let valueFive = this.state.five;
+    let num =
+      valueOne + valueTwo * 2 + valueThree * 3 + valueFour * 4 + valueFive * 5;
+    let den = valueOne + valueTwo + valueThree + valueFour + valueFive;
+    let total = num / den;
+    this.setState({ value: total });
   }
   checkDatabase() {
     let title = this.props.quote
@@ -177,7 +190,7 @@ export default class Rating extends Component {
           />
         )}
         <div className="info">
-          <h2>average user rating</h2>
+          <h2>average user rating: {this.state.value || ""}</h2>
           <span>one</span>
           <progress value={`${this.state.one}`} max="10" />
           <span>two</span>

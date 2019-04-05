@@ -84,7 +84,7 @@ input:disabled {
   color: grey;
 }
 .info {
-  width: 500px;
+  width: 350px;
   display: flex;
   flex-direction: column;
   transform: rotate(270deg);

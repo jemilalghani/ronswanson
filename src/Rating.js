@@ -60,7 +60,6 @@ export default class Rating extends Component {
         .join("")
         .split("?")
         .join("");
-      // title = escape(title);
       axios.get(`/api/rating/${title}`).then(response => {
         this.inputValues(response.data);
         this.calculateAvg();
@@ -78,7 +77,8 @@ export default class Rating extends Component {
       valueOne + valueTwo * 2 + valueThree * 3 + valueFour * 4 + valueFive * 5;
     let den = valueOne + valueTwo + valueThree + valueFour + valueFive;
     let total = num / den;
-    this.setState({ value: total });
+    let final = total.toFixed(2);
+    this.setState({ value: final });
   }
   checkDatabase() {
     let title = this.props.quote
@@ -86,16 +86,16 @@ export default class Rating extends Component {
       .join("")
       .split("?")
       .join("");
-    // title = escape(title);
-    axios.get(`/api/check/${this.props.ip}/${title}`).then(response => {
-      console.log("dhjfgjshdgjfhsgdj", response.data);
-      if (response.data.length) {
-        document.getElementById("submit").disabled = true;
-      } else {
-        document.getElementById("submit").disabled = false;
-      }
-      this.setState({ notAvail: response.data });
-    });
+    axios
+      .post("/api/check", { quote: title, ip: this.props.ip })
+      .then(response => {
+        if (response.data.length) {
+          document.getElementById("submit").disabled = true;
+        } else {
+          document.getElementById("submit").disabled = false;
+        }
+        this.setState({ notAvail: response.data });
+      });
   }
   inputValues(array) {
     let valueOne = this.state.one;
@@ -177,7 +177,6 @@ export default class Rating extends Component {
     this.setState({ stars: starsmapped });
   };
   render() {
-    console.log(this.state);
     return (
       <div className="ratingContainer">
         <div>{this.state.stars}</div>
@@ -190,7 +189,10 @@ export default class Rating extends Component {
           />
         )}
         <div className="info">
-          <h2>average user rating: {this.state.value || ""}</h2>
+          <h2>
+            average user rating:{" "}
+            {isNaN(this.state.value) ? "" : this.state.value}
+          </h2>
           <span>one</span>
           <progress value={`${this.state.one}`} max="10" />
           <span>two</span>

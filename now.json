@@ -1,0 +1,12 @@
+{
+  "env": {
+    "DATABASE": "@secret-connection",
+    "SESSION_SECRET": "@session-secret"
+  },
+  "build": {
+    "env": {
+      "DATABASE": "@secret-connection",
+      "SESSION_SECRET": "@session-secret"
+    }
+  }
+}

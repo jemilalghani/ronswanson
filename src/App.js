@@ -10,37 +10,22 @@ class App extends Component {
     super();
     this.state = {
       ip: "",
-      quote: [],
-      clicked: false
+      quote: []
     };
   }
   componentDidMount() {
-    axios.get("/api/session").then(session => {
-      this.setState({ ip: session.data.split(":").pop() });
+    axios.get("https://ip-api.io/api/json").then(session => {
+      console.log(session);
+      this.setState({ ip: session.data.ip });
     });
     axios
       .get("https://ron-swanson-quotes.herokuapp.com/v2/quotes")
       .then(quote => {
-        console.log(quote.data);
         this.setState({ quote: quote.data[0] });
       });
   }
-  small(selectedquote, check) {
-    if (check === 4) {
-      this.setState({ quote: selectedquote });
-    } else {
-      this.getQuote(check);
-    }
-  }
-  medium(selectedquote, check) {
-    if (check === 5) {
-      this.setState({ quote: selectedquote });
-    } else {
-      this.getQuote(check);
-    }
-  }
-  large(selectedquote, check) {
-    if (check === 13) {
+  size(selectedquote, check, value) {
+    if (check === value) {
       this.setState({ quote: selectedquote });
     } else {
       this.setState({ quote: "loading..." });
@@ -51,11 +36,11 @@ class App extends Component {
     let quoteArray = quote.split(" ");
     let quoteLength = quoteArray.length;
     if (quoteLength <= 4) {
-      this.small(quote, length);
+      this.size(quote, length, 4);
     } else if (quoteLength >= 5 && quoteLength <= 13) {
-      this.medium(quote, length);
+      this.size(quote, length, 5);
     } else if (quoteLength >= 13) {
-      this.large(quote, length);
+      this.size(quote, length, 13);
     }
   }
   getQuote(size) {
@@ -63,13 +48,7 @@ class App extends Component {
       .get("https://ron-swanson-quotes.herokuapp.com/v2/quotes")
       .then(quote => {
         this.checkLength(quote.data[0], size);
-        this.setState({ clicked: true });
       });
-  }
-  getInfo() {
-    axios.get(`/api/rating/${this.state.quote}`).then(response => {
-      this.setState({ ratingInfo: response.data });
-    });
   }
   render() {
     return (
@@ -89,11 +68,7 @@ class App extends Component {
               </button>
               <h1>{this.state.quote}</h1>
               {this.state.quote && (
-                <Rating
-                  quote={this.state.quote}
-                  ip={this.state.ip}
-                  clicked={this.state.clicked}
-                />
+                <Rating quote={this.state.quote} ip={this.state.ip} />
               )}
             </div>
           </div>

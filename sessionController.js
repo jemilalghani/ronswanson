@@ -1,5 +1,11 @@
 module.exports = {
   getIP: (req, res) => {
-    res.json(req.ip);
+    console.log(
+      (
+        req.headers["X-Forwarded-For"] ||
+        req.headers["x-forwarded-for"] ||
+        ""
+      ).split(",")[0] || req.client.remoteAddress
+    );
   }
 };

@@ -24,7 +24,7 @@ module.exports = {
   checkRating: (req, res) => {
     req.app
       .get("db")
-      .check_rating([req.params.ip, req.params.quote])
+      .check_rating([req.body.ip, req.body.quote])
       .then(ratings => {
         res.status(200).json(ratings);
       })
